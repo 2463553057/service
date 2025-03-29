@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>证书上传 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .header {
+            position: relative;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: var(--white);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-blue);
+            font-size: 20px;
+        }
+        
+        .progress-bar-container {
+            height: 4px;
+            background-color: var(--light-grey);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--purple), var(--light-purple));
+            width: 0;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--medium-grey);
+            margin-bottom: 8px;
+        }
+        
+        .progress-percentage {
+            font-weight: 600;
+            color: var(--purple);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--light-grey);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            background-color: rgba(99, 102, 241, 0.03);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:active {
+            background-color: rgba(99, 102, 241, 0.08);
+            border-color: var(--purple);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--purple);
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            color: var(--dark-grey);
+            margin-bottom: 16px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: var(--medium-grey);
+            margin-bottom: 24px;
+        }
+        
+        .upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--white);
+            color: var(--purple);
+            border: 1px solid var(--purple);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .upload-button:active {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .certificate-list {
+            margin-top: 32px;
+        }
+        
+        .list-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .badge-count {
+            background-color: var(--light-grey);
+            color: var(--dark-grey);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .certificate-item {
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .certificate-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--light-grey);
+        }
+        
+        .certificate-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--purple);
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        
+        .certificate-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .certificate-info p {
+            font-size: 14px;
+            color: var(--medium-grey);
+        }
+        
+        .certificate-actions {
+            display: flex;
+            gap: 4px;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+        }
+        
+        .certificate-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            color: var(--medium-grey);
+            border: 1px solid var(--light-grey);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .certificate-actions button:active {
+            background-color: var(--light-grey);
+        }
+        
+        .certificate-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .certificate-footer {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--medium-grey);
+            font-size: 13px;
+        }
+        
+        .certificate-footer i {
+            margin-right: 4px;
+        }
+        
+        .certificate-status {
+            font-weight: 500;
+        }
+        
+        .status-verified {
+            color: #10b981;
+        }
+        
+        .status-pending {
+            color: #f59e0b;
+        }
+        
+        .upload-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            width: 90%;
+            max-width: 340px;
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--light-grey);
+        }
+        
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 20px 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-grey);
+        }
+        
+        .modal-footer {
+            display: flex;
+            padding: 12px;
+            border-top: 1px solid var(--light-grey);
+        }
+        
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .cancel-button {
+            background-color: var(--light-grey);
+            color: var(--dark-grey);
+            margin-right: 8px;
+        }
+        
+        .confirm-button {
+            background-color: var(--purple);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="header">
+        <a href="profile.html" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="header-title">证书管理</div>
+    </div>
+    
+    <div class="container scroll-container">
+        <div class="section-box" style="margin-top: 16px;">
+            <div class="section-box-header">
+                <div class="section-box-title">
+                    <i class="fas fa-info-circle"></i>
+                    上传进度
+                </div>
+                <span class="status-badge status-pending">3/5</span>
+            </div>
+            <div class="section-box-content">
+                <div class="progress-text">
+                    <span>已上传</span>
+                    <span class="progress-percentage">60%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 60%;"></div>
+                </div>
+                <div class="hint-text">推荐上传：健康证、母婴护理师证书、育婴师证书、催乳师证书、推拿师证书等</div>
+            </div>
+        </div>
+        
+        <div class="upload-area">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <div class="upload-text">点击或拖拽上传证书照片</div>
+            <div class="upload-hint">支持 JPG、PNG、PDF 格式，单个文件不超过5MB</div>
+            <button class="upload-button">
+                <i class="fas fa-plus"></i>
+                选择文件
+            </button>
+        </div>
+        
+        <div class="certificate-list">
+            <div class="list-title">
+                <span>已上传证书</span>
+                <span class="badge-count">3</span>
+            </div>
+            
+            <div class="certificate-item">
+                <div class="certificate-header">
+                    <div class="certificate-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="certificate-info">
+                        <h3>健康证</h3>
+                        <p>上传于 2023-05-20</p>
+                    </div>
+                    <div class="certificate-actions">
+                        <button><i class="fas fa-pen"></i></button>
+                        <button><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1584037618607-a213eeb8e8c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="健康证" class="certificate-image">
+                <div class="certificate-footer">
+                    <div><i class="fas fa-calendar"></i> 有效期至：2024-05-19</div>
+                    <div class="certificate-status status-verified"><i class="fas fa-check-circle"></i> 已认证</div>
+                </div>
+            </div>
+            
+            <div class="certificate-item">
+                <div class="certificate-header">
+                    <div class="certificate-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="certificate-info">
+                        <h3>母婴护理师证书</h3>
+                        <p>上传于 2023-05-20</p>
+                    </div>
+                    <div class="certificate-actions">
+                        <button><i class="fas fa-pen"></i></button>
+                        <button><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1560785496-3c9d27877182?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="母婴护理师证书" class="certificate-image">
+                <div class="certificate-footer">
+                    <div><i class="fas fa-calendar"></i> 有效期至：2028-05-19</div>
+                    <div class="certificate-status status-verified"><i class="fas fa-check-circle"></i> 已认证</div>
+                </div>
+            </div>
+            
+            <div class="certificate-item">
+                <div class="certificate-header">
+                    <div class="certificate-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="certificate-info">
+                        <h3>催乳师证书</h3>
+                        <p>上传于 2023-06-01</p>
+                    </div>
+                    <div class="certificate-actions">
+                        <button><i class="fas fa-pen"></i></button>
+                        <button><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1555955207-b53f680aa58b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="催乳师证书" class="certificate-image">
+                <div class="certificate-footer">
+                    <div><i class="fas fa-calendar"></i> 有效期至：2026-06-01</div>
+                    <div class="certificate-status status-pending"><i class="fas fa-clock"></i> 审核中</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 上传证书弹窗 -->
+    <div class="upload-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>添加证书信息</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>证书类型</label>
+                    <select class="form-control">
+                        <option>健康证</option>
+                        <option>母婴护理师证书</option>
+                        <option>育婴师证书</option>
+                        <option>催乳师证书</option>
+                        <option>推拿师证书</option>
+                        <option>产康师证书</option>
+                        <option>护工证书</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>证书编号</label>
+                    <input type="text" class="form-control" placeholder="请输入证书编号">
+                </div>
+                <div class="form-group">
+                    <label>发证日期</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>有效期至</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>发证机构</label>
+                    <input type="text" class="form-control" placeholder="请输入发证机构">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-button">取消</button>
+                <button class="confirm-button">确认</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

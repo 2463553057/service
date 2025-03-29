@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人资料 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-info h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        .profile-info p {
+            color: var(--medium-grey);
+            font-size: 15px;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-item {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            border-radius: 16px;
+            padding: 16px;
+            color: var(--white);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            animation: fadeIn 0.3s ease forwards;
+            animation-delay: calc(var(--index) * 0.1s);
+            opacity: 0;
+        }
+        
+        .stat-item h3 {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .stat-item p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .section-content {
+            padding: 16px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+        }
+
+        .field {
+            display: flex;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--light-grey);
+        }
+
+        .field:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .field-label {
+            flex: 0 0 100px;
+            color: var(--dark-grey);
+            font-weight: 500;
+        }
+
+        .field-value {
+            flex: 1;
+            color: var(--dark-blue);
+        }
+
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .certificate-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .certificate-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .certificate-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            padding: 12px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: var(--white);
+            color: var(--purple);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .edit-button:active {
+            transform: scale(0.95);
+            background-color: var(--light-grey);
+        }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--purple);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-weight: 500;
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .action-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .secondary-button {
+            background-color: white;
+            color: var(--purple);
+            border: 1px solid var(--purple);
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="container scroll-container">
+        <div class="profile-header">
+            <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="头像" class="profile-avatar">
+            <div class="profile-info">
+                <h1>张阿姨</h1>
+                <p>专业月嫂 · 5年经验</p>
+                <span class="badge"><i class="fas fa-star"></i> 4.9分</span>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="profile-edit.html" class="action-button">
+                <i class="fas fa-user-edit"></i> 编辑个人资料
+            </a>
+            <a href="certificate-upload.html" class="action-button secondary-button">
+                <i class="fas fa-certificate"></i> 管理证书
+            </a>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="stat-item" style="--index: 0">
+                <h3>36</h3>
+                <p>服务订单</p>
+            </div>
+            <div class="stat-item" style="--index: 1">
+                <h3>28</h3>
+                <p>护理产妇</p>
+            </div>
+            <div class="stat-item" style="--index: 2">
+                <h3>32</h3>
+                <p>护理宝宝</p>
+            </div>
+        </div>
+        
+        <div class="section-title">基本信息<a href="profile-edit.html" class="edit-button"><i class="fas fa-pencil"></i></a></div>
+        <div class="section-content animate-fade-in">
+            <div class="field">
+                <div class="field-label">姓名</div>
+                <div class="field-value">张丽华</div>
+            </div>
+            <div class="field">
+                <div class="field-label">手机号</div>
+                <div class="field-value">138****6789</div>
+            </div>
+            <div class="field">
+                <div class="field-label">年龄</div>
+                <div class="field-value">42岁</div>
+            </div>
+            <div class="field">
+                <div class="field-label">从业年限</div>
+                <div class="field-value">5年</div>
+            </div>
+            <div class="field">
+                <div class="field-label">现住址</div>
+                <div class="field-value">上海市浦东新区张江高科技园区</div>
+            </div>
+        </div>
+        
+        <div class="section-title">专业能力<a href="profile-edit.html#professional" class="edit-button"><i class="fas fa-pencil"></i></a></div>
+        <div class="section-content animate-fade-in">
+            <div class="field">
+                <div class="field-label">护理产妇</div>
+                <div class="field-value">28人</div>
+            </div>
+            <div class="field">
+                <div class="field-label">护理宝宝</div>
+                <div class="field-value">32人</div>
+            </div>
+            <div class="field">
+                <div class="field-label">特殊护理</div>
+                <div class="field-value">剖腹产3人，双胞胎1对</div>
+            </div>
+            <div class="field">
+                <div class="field-label">专长</div>
+                <div class="field-value">母乳喂养指导，产后恢复，新生儿护理</div>
+            </div>
+        </div>
+        
+        <div class="section-title">证书资质<a href="certificate-upload.html" class="edit-button"><i class="fas fa-plus"></i></a></div>
+        <div class="section-content animate-fade-in">
+            <div class="certificates-grid">
+                <div class="certificate-item">
+                    <img src="https://images.unsplash.com/photo-1584037618607-a213eeb8e8c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="健康证">
+                    <div class="certificate-overlay">健康证</div>
+                </div>
+                <div class="certificate-item">
+                    <img src="https://images.unsplash.com/photo-1560785496-3c9d27877182?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="月嫂证">
+                    <div class="certificate-overlay">母婴护理师证书</div>
+                </div>
+                <div class="certificate-item">
+                    <img src="https://images.unsplash.com/photo-1555955207-b53f680aa58b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="催乳师证">
+                    <div class="certificate-overlay">催乳师证书</div>
+                </div>
+                <div class="certificate-item">
+                    <img src="https://images.unsplash.com/photo-1573497161161-c3e73707e25c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="育婴师证">
+                    <div class="certificate-overlay">育婴师证书</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="button" style="width: 100%; margin-top: 24px;">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </button>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="orders.html" class="tab-item">
+            <i class="fas fa-list-ul"></i>
+            <span>订单</span>
+        </a>
+        <a href="schedule.html" class="tab-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>接单时间</span>
+        </a>
+        <a href="profile.html" class="tab-item active">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 

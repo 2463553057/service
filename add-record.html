@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加服务记录 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .header {
+            position: relative;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: var(--white);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-blue);
+            font-size: 20px;
+        }
+        
+        .close-button {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-grey);
+            font-size: 20px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .record-form {
+            padding: 16px;
+        }
+        
+        .form-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--dark-grey);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-grey);
+        }
+        
+        .required::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .record-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .record-type {
+            background-color: var(--white);
+            border: 1px solid var(--light-grey);
+            border-radius: 12px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .record-type.selected {
+            border-color: var(--purple);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+        
+        .record-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple);
+            font-size: 20px;
+        }
+        
+        .record-type-label {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .date-time-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .input-field {
+            flex: 1;
+            position: relative;
+        }
+        
+        .input-field input, 
+        .input-field select,
+        .input-field textarea,
+        .custom-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--light-grey);
+            border-radius: 12px;
+            font-size: 16px;
+            background-color: var(--white);
+            color: var(--dark-grey);
+            transition: border-color 0.3s;
+        }
+        
+        .input-field input:focus, 
+        .input-field select:focus,
+        .input-field textarea:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+        
+        .input-field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .input-field-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-grey);
+            pointer-events: none;
+        }
+        
+        .photo-upload {
+            margin-top: 16px;
+        }
+        
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .upload-item {
+            aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            border: 1px dashed var(--light-grey);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-item.filled {
+            border-style: solid;
+            border-color: var(--light-grey);
+        }
+        
+        .upload-icon {
+            color: var(--medium-grey);
+            font-size: 24px;
+        }
+        
+        .upload-label {
+            font-size: 12px;
+            color: var(--medium-grey);
+        }
+        
+        .upload-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-item .delete-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: none;
+            z-index: 2;
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .toggle-button {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--light-grey);
+            border-radius: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--dark-grey);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .toggle-button.selected {
+            background-color: var(--purple);
+            border-color: var(--purple);
+            color: var(--white);
+        }
+        
+        .metric-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .metric-input {
+            position: relative;
+        }
+        
+        .metric-input .unit {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-grey);
+            pointer-events: none;
+        }
+        
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background-color: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+        
+        .submit-button {
+            width: 100%;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .specific-fields {
+            display: none;
+        }
+        
+        .specific-fields.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="header">
+        <a href="service-record.html" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="header-title">添加服务记录</div>
+        <button class="close-button">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="container scroll-container" style="padding-bottom: 90px;">
+        <div class="record-form">
+            <div class="form-group">
+                <label class="form-label required">记录类型</label>
+                <div class="record-types">
+                    <div class="record-type selected" data-type="feeding">
+                        <div class="record-type-icon">
+                            <i class="fas fa-baby-carriage"></i>
+                        </div>
+                        <div class="record-type-label">喂奶</div>
+                    </div>
+                    <div class="record-type" data-type="sleep">
+                        <div class="record-type-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="record-type-label">睡眠</div>
+                    </div>
+                    <div class="record-type" data-type="bath">
+                        <div class="record-type-icon">
+                            <i class="fas fa-bath"></i>
+                        </div>
+                        <div class="record-type-label">洗澡</div>
+                    </div>
+                    <div class="record-type" data-type="diaper">
+                        <div class="record-type-icon">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <div class="record-type-label">排便</div>
+                    </div>
+                    <div class="record-type" data-type="momcare">
+                        <div class="record-type-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="record-type-label">妈妈护理</div>
+                    </div>
+                    <div class="record-type" data-type="other">
+                        <div class="record-type-icon">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                        <div class="record-type-label">其他</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">记录时间</label>
+                <div class="date-time-input">
+                    <div class="input-field">
+                        <input type="date" value="2023-06-20">
+                    </div>
+                    <div class="input-field">
+                        <input type="time" value="10:00">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 喂奶特定字段 -->
+            <div class="specific-fields active" id="feeding-fields">
+                <div class="form-group">
+                    <label class="form-label required">喂奶类型</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">奶粉</div>
+                        <div class="toggle-button">母乳</div>
+                        <div class="toggle-button">辅食</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">喂奶量/时长</label>
+                    <div class="input-field">
+                        <input type="text" placeholder="如：120ml 或 15分钟">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">结束时间</label>
+                    <div class="input-field">
+                        <input type="time" value="10:15">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 睡眠特定字段 -->
+            <div class="specific-fields" id="sleep-fields">
+                <div class="form-group">
+                    <label class="form-label required">睡眠状态</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">自然入睡</div>
+                        <div class="toggle-button">哄睡</div>
+                        <div class="toggle-button">其他</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">睡眠质量</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">良好</div>
+                        <div class="toggle-button">一般</div>
+                        <div class="toggle-button">差</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">睡眠时长</label>
+                    <div class="input-field">
+                        <input type="text" placeholder="如：1小时30分钟">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">结束时间</label>
+                    <div class="input-field">
+                        <input type="time">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 洗澡特定字段 -->
+            <div class="specific-fields" id="bath-fields">
+                <div class="form-group">
+                    <label class="form-label required">洗澡参数</label>
+                    <div class="metric-inputs">
+                        <div class="metric-input">
+                            <input type="text" placeholder="水温">
+                            <span class="unit">℃</span>
+                        </div>
+                        <div class="metric-input">
+                            <input type="text" placeholder="时长">
+                            <span class="unit">分钟</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">使用产品</label>
+                    <div class="input-field">
+                        <input type="text" placeholder="如：婴儿沐浴露、爽身粉等">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 排便特定字段 -->
+            <div class="specific-fields" id="diaper-fields">
+                <div class="form-group">
+                    <label class="form-label required">排便类型</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">尿尿</div>
+                        <div class="toggle-button">便便</div>
+                        <div class="toggle-button">混合</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">便便颜色</label>
+                    <div class="input-field">
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="yellow">黄色</option>
+                            <option value="green">绿色</option>
+                            <option value="brown">棕色</option>
+                            <option value="black">黑色</option>
+                            <option value="other">其他</option>
+                        </select>
+                        <div class="input-field-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">便便质地</label>
+                    <div class="input-field">
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="soft">软便</option>
+                            <option value="normal">正常</option>
+                            <option value="hard">硬便</option>
+                            <option value="watery">水样便</option>
+                            <option value="other">其他</option>
+                        </select>
+                        <div class="input-field-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 妈妈护理特定字段 -->
+            <div class="specific-fields" id="momcare-fields">
+                <div class="form-group">
+                    <label class="form-label required">护理类型</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">伤口护理</div>
+                        <div class="toggle-button">乳腺护理</div>
+                        <div class="toggle-button">其他</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">护理方法</label>
+                    <div class="input-field">
+                        <input type="text" placeholder="如：按摩手法、使用器具等">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">恢复状况</label>
+                    <div class="toggle-group">
+                        <div class="toggle-button selected">良好</div>
+                        <div class="toggle-button">一般</div>
+                        <div class="toggle-button">需注意</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">记录内容</label>
+                <div class="input-field">
+                    <textarea placeholder="请输入详细记录内容..."></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">上传照片</label>
+                <div class="upload-grid">
+                    <div class="upload-item">
+                        <i class="fas fa-camera upload-icon"></i>
+                        <div class="upload-label">添加照片</div>
+                    </div>
+                    <div class="upload-item filled">
+                        <img src="https://images.unsplash.com/photo-1544126592-15f9a3ffaaa4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="上传的照片">
+                        <button class="delete-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="upload-item">
+                        <i class="fas fa-camera upload-icon"></i>
+                        <div class="upload-label">添加照片</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-bar">
+        <button class="button submit-button">保存记录</button>
+    </div>
+</body>
+</html> 

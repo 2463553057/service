@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿姨端应用原型</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #0F172A;
+            --purple: #6366F1;
+            --light-purple: #818CF8;
+            --white: #F8FAFC;
+            --light-grey: #E2E8F0;
+            --medium-grey: #94A3B8;
+            --dark-grey: #475569;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--dark-blue);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .description {
+            color: var(--dark-grey);
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .prototype-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: var(--dark-blue);
+            margin-bottom: 24px;
+            text-align: center;
+            grid-column: 1 / -1;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--purple);
+            border-radius: 3px;
+        }
+        
+        .device {
+            position: relative;
+            width: 375px;
+            height: 812px;
+            margin: 0 auto;
+            border-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            background-color: white;
+            border: 10px solid #1a1a1a;
+        }
+        
+        .device::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 30px;
+            background-color: #1a1a1a;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 10;
+        }
+        
+        .device-frame {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            border-radius: 30px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .screen-label {
+            text-align: center;
+            margin-top: 16px;
+            font-weight: bold;
+            color: var(--dark-blue);
+        }
+        
+        .screen-description {
+            text-align: center;
+            color: var(--dark-grey);
+            font-size: 14px;
+            margin-top: 8px;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .prototype-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .prototype-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>阿姨端应用原型设计</h1>
+        <p class="description">这是一套高保真的阿姨端应用原型，基于iOS设计规范开发，包含完整的核心功能模块。这些界面展示了母婴护理人员如何管理个人信息、排班、订单以及服务记录等核心工作内容。</p>
+        <p class="description" style="color: var(--purple); font-weight: 500;">已实现页面跳转关系：登录→订单列表、个人资料→编辑资料/证书管理、订单详情→上户确认/下户确认→评价邀请、服务记录→添加记录</p>
+    </div>
+    
+    <div class="prototype-container">
+        <div class="section-title">用户信息管理</div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="login.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">登录页面</div>
+            <div class="screen-description">提供手机号验证码登录和账号密码登录两种方式，以及社交媒体快捷登录</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="profile.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">个人资料</div>
+            <div class="screen-description">展示阿姨的基本信息、工作经验和专业能力，帮助客户了解阿姨的专业背景</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="profile-edit.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">编辑个人资料</div>
+            <div class="screen-description">允许阿姨编辑个人基本信息、专业能力和工作经验等资料</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="certificate-upload.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">证书管理</div>
+            <div class="screen-description">管理各类专业证书，包括健康证、母婴护理师证书等资质证明</div>
+        </div>
+        
+        <div class="section-title">接单与排班</div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="schedule.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">接单时间管理</div>
+            <div class="screen-description">灵活设置可接单时间，合理安排工作日程，提高接单效率</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="orders.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">订单管理</div>
+            <div class="screen-description">分类查看待接单、进行中和已完成的订单，一目了然的订单状态</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="order-detail.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">订单详情</div>
+            <div class="screen-description">展示订单的详细信息，包括服务内容、客户信息和服务地址等</div>
+        </div>
+        
+        <div class="section-title">服务流程</div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="order-confirm.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">上户确认</div>
+            <div class="screen-description">服务前确认流程，包含客户信息、服务地址、特殊要求和上户准备清单</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="service-record.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">服务记录</div>
+            <div class="screen-description">记录日常服务内容，时间轴形式展示宝宝和妈妈的护理记录</div>
+        </div>
+        
+        <div>
+            <div class="device">
+                <div class="device-frame">
+                    <iframe src="add-record.html"></iframe>
+                </div>
+            </div>
+            <div class="screen-label">添加服务记录</div>
+            <div class="screen-description">添加各类服务记录，包括喂奶、睡眠、洗澡、排便和妈妈护理等</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; text-align: center; color: var(--dark-grey); font-size: 14px;">
+        阿姨端应用原型 © 2023 | 设计与开发
+    </div>
+</body>
+</html> 

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上户确认 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .header {
+            position: relative;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: var(--white);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-blue);
+            font-size: 20px;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .order-banner {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            color: var(--white);
+            padding: 20px 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-banner::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .order-banner::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -75px;
+            left: -75px;
+        }
+        
+        .banner-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .banner-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .checklist {
+            margin-top: 24px;
+        }
+        
+        .checklist-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .checklist-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .checklist-item {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .checklist-item-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--light-grey);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .checklist-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple);
+            font-size: 20px;
+        }
+        
+        .checklist-label {
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .checklist-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--light-grey);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 12px;
+        }
+        
+        .checklist-status.checked {
+            background-color: var(--purple);
+            border-color: var(--purple);
+        }
+        
+        .checklist-content {
+            padding: 16px;
+            color: var(--dark-grey);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .customer-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .customer-header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+        }
+        
+        .customer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .customer-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .customer-info p {
+            color: var(--medium-grey);
+            font-size: 14px;
+        }
+        
+        .contact-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--purple);
+            border: 1px solid var(--light-grey);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        
+        .customer-map {
+            height: 160px;
+            background-color: var(--light-grey);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .customer-map img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .map-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            color: #ef4444;
+            font-size: 32px;
+        }
+        
+        .customer-address {
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .address-icon {
+            color: var(--purple);
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .address-text h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .address-text p {
+            color: var(--dark-grey);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .notes-section {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .notes-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .notes-content {
+            background-color: rgba(99, 102, 241, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .notes-content ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: var(--dark-grey);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .notes-content ul li {
+            margin-bottom: 8px;
+        }
+        
+        .notes-content ul li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .confirm-form {
+            margin-top: 32px;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .checkbox-group {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            accent-color: var(--purple);
+            margin-top: 2px;
+        }
+        
+        .checkbox-label {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-grey);
+        }
+        
+        .sign-area {
+            border: 1px dashed var(--light-grey);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        .sign-placeholder {
+            font-size: 14px;
+            color: var(--medium-grey);
+        }
+        
+        .signature-box {
+            height: 120px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .signature-image {
+            max-width: 80%;
+            max-height: 100px;
+            display: none;
+        }
+        
+        .sign-icon {
+            color: var(--medium-grey);
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background-color: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+        
+        .confirm-button {
+            width: 100%;
+            margin-top: 24px;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="header">
+        <a href="orders.html" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="header-title">上户确认</div>
+    </div>
+    
+    <div class="container scroll-container" style="padding-bottom: 90px;">
+        <div class="order-banner">
+            <div class="banner-title">订单即将开始服务</div>
+            <div class="banner-subtitle">服务时间：2023-06-20 ~ 2023-07-20</div>
+        </div>
+        
+        <div class="customer-card">
+            <div class="customer-header">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="客户头像" class="customer-avatar">
+                <div class="customer-info">
+                    <h3>王女士</h3>
+                    <p>上海市浦东新区</p>
+                </div>
+                <button class="contact-button">
+                    <i class="fas fa-phone-alt"></i>
+                </button>
+            </div>
+            
+            <div class="customer-map">
+                <img src="https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="地图">
+                <div class="map-marker">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+            </div>
+            
+            <div class="customer-address">
+                <div class="address-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="address-text">
+                    <h4>服务地址</h4>
+                    <p>上海市浦东新区张江高科技园区海德堡花园3栋2单元1201室</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="notes-section">
+            <div class="notes-header">
+                <i class="fas fa-exclamation-circle" style="color: var(--purple);"></i>
+                <div class="notes-title">客户特殊要求</div>
+            </div>
+            <div class="notes-content">
+                <ul>
+                    <li>客户是剖腹产，需要注意伤口护理</li>
+                    <li>宝宝有轻微黄疸，需要注意观察</li>
+                    <li>客户希望每天记录宝宝的饮食和排便情况</li>
+                    <li>客户要求保持房间通风整洁</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="checklist">
+            <div class="checklist-header">
+                <i class="fas fa-clipboard-list" style="color: var(--purple);"></i>
+                <div class="checklist-title">上户前准备清单</div>
+            </div>
+            
+            <div class="checklist-item">
+                <div class="checklist-item-header">
+                    <div class="checklist-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="checklist-label">证件准备</div>
+                    <div class="checklist-status checked">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <div class="checklist-content">
+                    请携带身份证、健康证等证件，以便客户核验。
+                </div>
+            </div>
+            
+            <div class="checklist-item">
+                <div class="checklist-item-header">
+                    <div class="checklist-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="checklist-label">个人物品</div>
+                    <div class="checklist-status checked">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <div class="checklist-content">
+                    准备好个人衣物、洗漱用品、换洗衣物等日常生活必需品。
+                </div>
+            </div>
+            
+            <div class="checklist-item">
+                <div class="checklist-item-header">
+                    <div class="checklist-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <div class="checklist-label">工作用品</div>
+                    <div class="checklist-status">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <div class="checklist-content">
+                    如有需要，请携带专业工作工具，如乳腺按摩工具、婴儿护理工具等。
+                </div>
+            </div>
+            
+            <div class="checklist-item">
+                <div class="checklist-item-header">
+                    <div class="checklist-icon">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                    <div class="checklist-label">健康状况</div>
+                    <div class="checklist-status">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <div class="checklist-content">
+                    确保自身健康状况良好，如有不适，请及时与平台和客户沟通。
+                </div>
+            </div>
+        </div>
+        
+        <div class="confirm-form">
+            <div class="form-title">上户确认</div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms1">
+                    <label for="terms1" class="checkbox-label">我已阅读并理解本次服务的内容和要求</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms2">
+                    <label for="terms2" class="checkbox-label">我确认已做好上户准备，将按时到达客户家中开始服务</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms3">
+                    <label for="terms3" class="checkbox-label">我将遵守平台规定和职业道德，提供专业的服务</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="terms4">
+                    <label for="terms4" class="checkbox-label">我知晓如遇到问题，可以随时联系平台客服寻求帮助</label>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>确认签名</label>
+                <div class="sign-area">
+                    <div class="signature-box">
+                        <i class="fas fa-pen-alt sign-icon"></i>
+                        <div class="sign-placeholder">点击此处进行签名</div>
+                        <img src="https://images.unsplash.com/photo-1560785496-3c9d27877182?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="签名" class="signature-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-bar">
+        <button class="button confirm-button">确认上户</button>
+    </div>
+</body>
+</html> 

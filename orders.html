@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tabs {
+            display: flex;
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+        
+        .tab.active {
+            color: var(--white);
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            bottom: 4px;
+            width: calc(33.333% - 8px);
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            z-index: 0;
+        }
+        
+        .tab-indicator.pos-1 {
+            transform: translateX(0);
+        }
+        
+        .tab-indicator.pos-2 {
+            transform: translateX(100%);
+        }
+        
+        .tab-indicator.pos-3 {
+            transform: translateX(200%);
+        }
+        
+        .order-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        .order-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+        }
+        
+        .order-card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--light-grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-card-body {
+            padding: 16px;
+        }
+        
+        .order-card-footer {
+            padding: 12px 16px;
+            background-color: rgba(99, 102, 241, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .customer-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .order-info-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        
+        .order-info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .order-info-item i {
+            color: var(--purple);
+            margin-top: 3px;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: #FEF9C3;
+            color: #CA8A04;
+        }
+        
+        .status-active {
+            background-color: #DCFCE7;
+            color: #16A34A;
+        }
+        
+        .status-completed {
+            background-color: #E0F2FE;
+            color: #0284C7;
+        }
+        
+        .order-price {
+            font-weight: 700;
+            color: var(--purple);
+            font-size: 18px;
+        }
+        
+        .reminder {
+            background-color: #FEF3C7;
+            color: #D97706;
+            padding: 10px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+        }
+        
+        .reminder i {
+            font-size: 18px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--medium-grey);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--light-grey);
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="container scroll-container">
+        <div class="page-title">订单管理</div>
+        
+        <div class="tabs">
+            <div class="tab active">待接单</div>
+            <div class="tab">进行中</div>
+            <div class="tab">已完成</div>
+            <div class="tab-indicator pos-1"></div>
+        </div>
+        
+        <div class="reminder">
+            <i class="fas fa-bell"></i>
+            <div>您有一个订单将在3天后上户，请做好准备</div>
+        </div>
+        
+        <!-- 待接单订单 -->
+        <div class="order-card">
+            <div class="order-card-header">
+                <div style="font-weight: 600;">订单号：2023061501</div>
+                <span class="status-badge status-pending">待接单</span>
+            </div>
+            <div class="order-card-body">
+                <div class="customer-info">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="客户头像" class="customer-avatar">
+                    <div>
+                        <div class="customer-name">王女士</div>
+                        <div style="color: var(--medium-grey); font-size: 14px;">上海市浦东新区</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <div>服务时间</div>
+                        <div style="color: var(--dark-grey);">2023-06-20 ~ 2023-07-20</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-baby"></i>
+                    <div>
+                        <div>服务内容</div>
+                        <div style="color: var(--dark-grey);">新生儿护理、产妇护理</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <div>服务地址</div>
+                        <div style="color: var(--dark-grey);">上海市浦东新区张江高科技园区海德堡花园</div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-card-footer">
+                <div class="order-price">¥12,800</div>
+                <button class="button">立即接单</button>
+            </div>
+        </div>
+        
+        <div class="order-card">
+            <div class="order-card-header">
+                <div style="font-weight: 600;">订单号：2023061502</div>
+                <span class="status-badge status-pending">待接单</span>
+            </div>
+            <div class="order-card-body">
+                <div class="customer-info">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="客户头像" class="customer-avatar">
+                    <div>
+                        <div class="customer-name">李女士</div>
+                        <div style="color: var(--medium-grey); font-size: 14px;">上海市静安区</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <div>服务时间</div>
+                        <div style="color: var(--dark-grey);">2023-06-25 ~ 2023-07-25</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-baby"></i>
+                    <div>
+                        <div>服务内容</div>
+                        <div style="color: var(--dark-grey);">双胞胎新生儿护理、产妇护理</div>
+                    </div>
+                </div>
+                
+                <div class="order-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <div>服务地址</div>
+                        <div style="color: var(--dark-grey);">上海市静安区南京西路1788号</div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-card-footer">
+                <div class="order-price">¥15,600</div>
+                <button class="button">立即接单</button>
+            </div>
+        </div>
+        
+        <!-- 进行中订单（默认不显示） -->
+        <div style="display: none;">
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div style="font-weight: 600;">订单号：2023060801</div>
+                    <span class="status-badge status-active">进行中</span>
+                </div>
+                <div class="order-card-body">
+                    <div class="customer-info">
+                        <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="客户头像" class="customer-avatar">
+                        <div>
+                            <div class="customer-name">张女士</div>
+                            <div style="color: var(--medium-grey); font-size: 14px;">上海市徐汇区</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <div>服务时间</div>
+                            <div style="color: var(--dark-grey);">2023-06-10 ~ 2023-07-10</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-baby"></i>
+                        <div>
+                            <div>服务内容</div>
+                            <div style="color: var(--dark-grey);">新生儿护理、产妇护理、母乳喂养指导</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <div>已服务</div>
+                            <div style="color: var(--dark-grey);">5天 / 共30天</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card-footer">
+                    <div class="order-price">¥13,500</div>
+                    <a href="order-detail.html" class="button">查看详情</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 已完成订单（默认不显示） -->
+        <div style="display: none;">
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div style="font-weight: 600;">订单号：2023050101</div>
+                    <span class="status-badge status-completed">已完成</span>
+                </div>
+                <div class="order-card-body">
+                    <div class="customer-info">
+                        <img src="https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="客户头像" class="customer-avatar">
+                        <div>
+                            <div class="customer-name">赵女士</div>
+                            <div style="color: var(--medium-grey); font-size: 14px;">上海市黄浦区</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <div>服务时间</div>
+                            <div style="color: var(--dark-grey);">2023-05-01 ~ 2023-05-31</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <div>客户评价</div>
+                            <div style="color: #F59E0B;">★★★★★ 5.0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-info-item">
+                        <i class="fas fa-comment"></i>
+                        <div>
+                            <div>评价内容</div>
+                            <div style="color: var(--dark-grey);">阿姨非常专业，照顾宝宝和我都很周到，宝宝很喜欢她，我们全家都很满意！</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-card-footer">
+                    <div class="order-price">¥14,200</div>
+                    <a href="order-detail.html" class="button">查看详情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="orders.html" class="tab-item active">
+            <i class="fas fa-list-ul"></i>
+            <span>订单</span>
+        </a>
+        <a href="schedule.html" class="tab-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>接单时间</span>
+        </a>
+        <a href="profile.html" class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 

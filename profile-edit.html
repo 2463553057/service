@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑个人资料 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .header {
+            position: relative;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: var(--white);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-blue);
+            font-size: 20px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .avatar-upload {
+            text-align: center;
+            margin: 24px 0;
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto;
+        }
+        
+        .avatar-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background-color: var(--purple);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+        }
+        
+        .form-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--light-grey);
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-grey);
+        }
+        
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--light-grey);
+            border-radius: 12px;
+            font-size: 16px;
+            background-color: var(--white);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input-group input:focus, 
+        .input-group select:focus, 
+        .input-group textarea:focus {
+            border-color: var(--purple);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .input-row .input-group {
+            flex: 1;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            padding: 8px 0;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input {
+            width: auto;
+            accent-color: var(--purple);
+        }
+        
+        .required:after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 4px;
+        }
+        
+        .hint-text {
+            font-size: 13px;
+            color: var(--medium-grey);
+            margin-top: 4px;
+        }
+        
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background-color: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            display: flex;
+            gap: 16px;
+        }
+        
+        .action-bar button {
+            flex: 1;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="header">
+        <a href="profile.html" class="back-button">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="header-title">编辑个人资料</div>
+    </div>
+    
+    <div class="container scroll-container" style="padding-bottom: 90px;">
+        <div class="avatar-upload">
+            <div class="avatar-container">
+                <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="头像" class="avatar-image">
+                <div class="avatar-edit">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <div class="hint-text" style="margin-top: 8px;">点击更换头像</div>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-section-title">基本信息</div>
+            
+            <div class="input-group">
+                <label class="required">应聘职位</label>
+                <select>
+                    <option value="月嫂" selected>月嫂</option>
+                    <option value="育婴师">育婴师</option>
+                    <option value="护工">护工</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label class="required">姓名</label>
+                <input type="text" value="张丽华">
+            </div>
+            
+            <div class="input-group">
+                <label class="required">手机号码</label>
+                <input type="tel" value="13866667777">
+            </div>
+            
+            <div class="input-group">
+                <label class="required">身份证号码</label>
+                <input type="text" value="31011019800101****">
+                <div class="hint-text">请输入18位身份证号码</div>
+            </div>
+            
+            <div class="input-group">
+                <label>上传身份证照片</label>
+                <div style="display: flex; gap: 12px; margin-top: 8px;">
+                    <div style="flex: 1; text-align: center; padding: 20px; border: 1px dashed var(--light-grey); border-radius: 12px;">
+                        <i class="fas fa-id-card" style="font-size: 24px; color: var(--medium-grey); display: block; margin-bottom: 8px;"></i>
+                        <div style="font-size: 14px; color: var(--medium-grey);">上传正面</div>
+                    </div>
+                    <div style="flex: 1; text-align: center; padding: 20px; border: 1px dashed var(--light-grey); border-radius: 12px;">
+                        <i class="fas fa-id-card" style="font-size: 24px; color: var(--medium-grey); display: block; margin-bottom: 8px;"></i>
+                        <div style="font-size: 14px; color: var(--medium-grey);">上传反面</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="required">出生日期</label>
+                    <input type="date" value="1980-05-15">
+                </div>
+                <div class="input-group">
+                    <label>年龄</label>
+                    <input type="number" value="42" disabled>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="required">性别</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="female" name="gender" checked>
+                        <label for="female">女</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="male" name="gender">
+                        <label for="male">男</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label>身高 (cm)</label>
+                    <input type="number" value="165">
+                </div>
+                <div class="input-group">
+                    <label>体重 (kg)</label>
+                    <input type="number" value="55">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="required">从业年限</label>
+                <select>
+                    <option>1年以下</option>
+                    <option>1-3年</option>
+                    <option selected>3-5年</option>
+                    <option>5-10年</option>
+                    <option>10年以上</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label class="required">户籍地址</label>
+                <input type="text" value="江苏省南京市江宁区">
+            </div>
+            
+            <div class="input-group">
+                <label class="required">现住址</label>
+                <input type="text" value="上海市浦东新区张江高科技园区">
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-section-title">专业信息</div>
+            
+            <div class="input-group">
+                <label>护理产妇数量</label>
+                <input type="number" value="28">
+            </div>
+            
+            <div class="input-group">
+                <label>护理宝宝数量</label>
+                <input type="number" value="32">
+            </div>
+            
+            <div class="input-group">
+                <label>是否护理过特殊产妇</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="special-mother-yes" name="special-mother" checked>
+                        <label for="special-mother-yes">是</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="special-mother-no" name="special-mother">
+                        <label for="special-mother-no">否</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>特殊产妇情况描述</label>
+                <textarea rows="3">剖腹产3人，高龄产妇2人</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>是否护理过特殊宝宝</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="special-baby-yes" name="special-baby" checked>
+                        <label for="special-baby-yes">是</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="special-baby-no" name="special-baby">
+                        <label for="special-baby-no">否</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>特殊宝宝情况描述</label>
+                <textarea rows="3">双胞胎1对，黄疸情况2例</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>宝宝年龄段经验</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+                    <div style="flex: 0 0 calc(50% - 5px); padding: 10px; background-color: rgba(99, 102, 241, 0.1); border-radius: 8px; color: var(--purple); font-weight: 500;">
+                        <input type="checkbox" checked> 0-3个月
+                    </div>
+                    <div style="flex: 0 0 calc(50% - 5px); padding: 10px; background-color: rgba(99, 102, 241, 0.1); border-radius: 8px; color: var(--purple); font-weight: 500;">
+                        <input type="checkbox" checked> 3-6个月
+                    </div>
+                    <div style="flex: 0 0 calc(50% - 5px); padding: 10px; background-color: rgba(99, 102, 241, 0.1); border-radius: 8px; color: var(--purple); font-weight: 500;">
+                        <input type="checkbox" checked> 6-12个月
+                    </div>
+                    <div style="flex: 0 0 calc(50% - 5px); padding: 10px; background-color: white; border-radius: 8px; border: 1px solid var(--light-grey);">
+                        <input type="checkbox"> 1-3岁
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>能力和专长</label>
+                <textarea rows="3">母乳喂养指导，产后恢复，新生儿护理，月子餐制作</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>自我评价</label>
+                <textarea rows="4">从事月嫂工作5年，熟悉婴儿喂养、洗澡、护理等各项工作。性格耐心细致，有责任心，能够与家庭成员良好沟通。</textarea>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-section-title">证书信息</div>
+            
+            <div class="input-group">
+                <label>已上传证书</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+                    <div style="position: relative; flex: 0 0 calc(50% - 6px); background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="https://images.unsplash.com/photo-1584037618607-a213eeb8e8c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="健康证" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;">
+                        <div style="position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-times" style="color: #ef4444;"></i>
+                        </div>
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: white; font-size: 12px;">
+                            健康证
+                        </div>
+                    </div>
+                    <div style="position: relative; flex: 0 0 calc(50% - 6px); background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="https://images.unsplash.com/photo-1560785496-3c9d27877182?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="母婴护理师证" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;">
+                        <div style="position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-times" style="color: #ef4444;"></i>
+                        </div>
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 8px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: white; font-size: 12px;">
+                            母婴护理师证书
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>添加更多证书</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+                    <div style="flex: 0 0 calc(50% - 6px); aspect-ratio: 3/4; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed var(--light-grey); border-radius: 12px;">
+                        <i class="fas fa-plus" style="font-size: 24px; color: var(--medium-grey); margin-bottom: 8px;"></i>
+                        <div style="color: var(--medium-grey); font-size: 14px; text-align: center;">添加证书照片</div>
+                    </div>
+                </div>
+                <div class="hint-text">支持上传健康证、母婴护理师证书、育婴师证书、催乳师证书等</div>
+            </div>
+            
+            <div class="input-group">
+                <label>上传体检报告</label>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; border: 1px dashed var(--light-grey); border-radius: 12px; margin-top: 8px;">
+                    <i class="fas fa-file-medical" style="font-size: 32px; color: var(--medium-grey); margin-bottom: 12px;"></i>
+                    <div style="color: var(--medium-grey); font-size: 15px; text-align: center; margin-bottom: 16px;">点击上传体检报告</div>
+                    <a href="#" style="color: var(--purple); font-size: 14px; display: flex; align-items: center; gap: 4px;">
+                        <i class="fas fa-cloud-upload-alt"></i> 选择文件
+                    </a>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>服务照片</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+                    <div style="position: relative; flex: 0 0 calc(33.333% - 8px); aspect-ratio: 1/1; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="服务照片" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-times" style="color: #ef4444; font-size: 10px;"></i>
+                        </div>
+                    </div>
+                    <div style="position: relative; flex: 0 0 calc(33.333% - 8px); aspect-ratio: 1/1; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                        <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="服务照片" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-times" style="color: #ef4444; font-size: 10px;"></i>
+                        </div>
+                    </div>
+                    <div style="flex: 0 0 calc(33.333% - 8px); aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed var(--light-grey); border-radius: 8px;">
+                        <i class="fas fa-plus" style="font-size: 18px; color: var(--medium-grey);"></i>
+                    </div>
+                </div>
+                <div class="hint-text">上传服务过程中的照片，展示您的专业技能</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-bar">
+        <button class="button button-secondary">取消</button>
+        <button class="button">保存</button>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>接单时间管理 - 阿姨端</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .calendar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .calendar-nav-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--white);
+            color: var(--dark-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-nav-btn:active {
+            transform: scale(0.95);
+            background-color: var(--light-grey);
+        }
+        
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .weekday {
+            font-size: 13px;
+            color: var(--medium-grey);
+            padding: 8px 0;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        
+        .day {
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .day.available {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--purple);
+            font-weight: 500;
+        }
+        
+        .day.today {
+            border: 2px solid var(--purple);
+            font-weight: 600;
+        }
+        
+        .day.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .day:active {
+            transform: scale(0.95);
+            background-color: var(--light-grey);
+        }
+        
+        .day-number {
+            font-size: 15px;
+        }
+
+        .time-slots {
+            margin-top: 24px;
+        }
+        
+        .time-slots-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .time-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .time-slot {
+            flex: 0 0 calc(50% - 5px);
+            padding: 14px;
+            text-align: center;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot.selected {
+            background-color: var(--purple);
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        
+        .time-slot:active {
+            transform: scale(0.98);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .action-buttons .button {
+            flex: 1;
+        }
+
+        .selected-date {
+            background-color: var(--white);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="container scroll-container">
+        <div class="page-title">接单时间管理</div>
+        
+        <div class="selected-date">
+            <i class="fas fa-calendar-check"></i>
+            已选择：2023年6月15日
+        </div>
+        
+        <div class="card">
+            <div class="calendar-header">
+                <div class="calendar-title">2023年6月</div>
+                <div class="calendar-nav">
+                    <a href="#" class="calendar-nav-btn"><i class="fas fa-chevron-left"></i></a>
+                    <a href="#" class="calendar-nav-btn"><i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="weekdays">
+                <div class="weekday">日</div>
+                <div class="weekday">一</div>
+                <div class="weekday">二</div>
+                <div class="weekday">三</div>
+                <div class="weekday">四</div>
+                <div class="weekday">五</div>
+                <div class="weekday">六</div>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="day disabled"><span class="day-number">28</span></div>
+                <div class="day disabled"><span class="day-number">29</span></div>
+                <div class="day disabled"><span class="day-number">30</span></div>
+                <div class="day disabled"><span class="day-number">31</span></div>
+                <div class="day"><span class="day-number">1</span></div>
+                <div class="day"><span class="day-number">2</span></div>
+                <div class="day"><span class="day-number">3</span></div>
+                
+                <div class="day"><span class="day-number">4</span></div>
+                <div class="day"><span class="day-number">5</span></div>
+                <div class="day"><span class="day-number">6</span></div>
+                <div class="day"><span class="day-number">7</span></div>
+                <div class="day"><span class="day-number">8</span></div>
+                <div class="day"><span class="day-number">9</span></div>
+                <div class="day"><span class="day-number">10</span></div>
+                
+                <div class="day"><span class="day-number">11</span></div>
+                <div class="day"><span class="day-number">12</span></div>
+                <div class="day"><span class="day-number">13</span></div>
+                <div class="day"><span class="day-number">14</span></div>
+                <div class="day today available"><span class="day-number">15</span></div>
+                <div class="day available"><span class="day-number">16</span></div>
+                <div class="day available"><span class="day-number">17</span></div>
+                
+                <div class="day available"><span class="day-number">18</span></div>
+                <div class="day available"><span class="day-number">19</span></div>
+                <div class="day available"><span class="day-number">20</span></div>
+                <div class="day"><span class="day-number">21</span></div>
+                <div class="day"><span class="day-number">22</span></div>
+                <div class="day"><span class="day-number">23</span></div>
+                <div class="day"><span class="day-number">24</span></div>
+                
+                <div class="day"><span class="day-number">25</span></div>
+                <div class="day"><span class="day-number">26</span></div>
+                <div class="day"><span class="day-number">27</span></div>
+                <div class="day"><span class="day-number">28</span></div>
+                <div class="day"><span class="day-number">29</span></div>
+                <div class="day"><span class="day-number">30</span></div>
+                <div class="day disabled"><span class="day-number">1</span></div>
+            </div>
+        </div>
+        
+        <div class="time-slots">
+            <div class="time-slots-header">
+                <div class="section-title" style="margin: 0;">选择可接单时间段</div>
+            </div>
+            
+            <div class="time-grid">
+                <div class="time-slot">08:00</div>
+                <div class="time-slot">09:00</div>
+                <div class="time-slot selected">10:00</div>
+                <div class="time-slot selected">11:00</div>
+                <div class="time-slot selected">12:00</div>
+                <div class="time-slot selected">13:00</div>
+                <div class="time-slot selected">14:00</div>
+                <div class="time-slot selected">15:00</div>
+                <div class="time-slot selected">16:00</div>
+                <div class="time-slot selected">17:00</div>
+                <div class="time-slot">18:00</div>
+                <div class="time-slot">19:00</div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="button button-secondary">重置</button>
+                <button class="button">保存</button>
+            </div>
+        </div>
+        
+        <div class="section-title">近期接单状态</div>
+        <div class="card">
+            <div class="list-item">
+                <div>
+                    <div style="font-weight: 500;">2023年6月16日</div>
+                    <div style="color: var(--medium-grey); font-size: 14px;">10:00 - 17:00</div>
+                </div>
+                <span class="badge">可接单</span>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div style="font-weight: 500;">2023年6月17日</div>
+                    <div style="color: var(--medium-grey); font-size: 14px;">10:00 - 17:00</div>
+                </div>
+                <span class="badge">可接单</span>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div style="font-weight: 500;">2023年6月18日</div>
+                    <div style="color: var(--medium-grey); font-size: 14px;">10:00 - 17:00</div>
+                </div>
+                <span class="badge">可接单</span>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div style="font-weight: 500;">2023年6月19日</div>
+                    <div style="color: var(--medium-grey); font-size: 14px;">10:00 - 17:00</div>
+                </div>
+                <span class="badge">可接单</span>
+            </div>
+            <div class="list-item">
+                <div>
+                    <div style="font-weight: 500;">2023年6月20日</div>
+                    <div style="color: var(--medium-grey); font-size: 14px;">10:00 - 17:00</div>
+                </div>
+                <span class="badge">可接单</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="orders.html" class="tab-item">
+            <i class="fas fa-list-ul"></i>
+            <span>订单</span>
+        </a>
+        <a href="schedule.html" class="tab-item active">
+            <i class="fas fa-calendar-alt"></i>
+            <span>接单时间</span>
+        </a>
+        <a href="profile.html" class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 
